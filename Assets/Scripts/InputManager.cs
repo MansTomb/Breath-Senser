@@ -11,9 +11,10 @@ public class InputManager : MonoBehaviour
     private const float Precision = 100f;
 
     private float _LowPassFilterFactor;
+    private Vector3 _LowPassValueOld = Vector3.zero;
     private Vector3 _LowPassValue = Vector3.zero;
 
-    public event Action<Vector3> ValueChanged;
+    public event Action<Vector3, Vector3> ValueChanged;
 
     public Vector3 Value => _LowPassValue * Precision;
 
@@ -29,15 +30,16 @@ public class InputManager : MonoBehaviour
     {
         _LowPassValue = LowPassFilterAccelerometer(_LowPassValue);
     }
-    
-    Vector3 LowPassFilterAccelerometer(Vector3 prevValue)
+
+    private Vector3 LowPassFilterAccelerometer(Vector3 prevValue)
     {
         Vector3 newValue = Vector3.Lerp(prevValue, GetAccelerometerValue(), _LowPassFilterFactor);
-        ValueChanged?.Invoke(newValue * Precision);
+        ValueChanged?.Invoke(newValue * Precision, _LowPassValueOld);
+        _LowPassValueOld = (newValue * Precision);
         return newValue;
     }
-    
-    Vector3 GetAccelerometerValue()
+
+    private Vector3 GetAccelerometerValue()
     {
         Vector3 acc = Vector3.zero;
         float period = 0.0f;
@@ -54,7 +56,7 @@ public class InputManager : MonoBehaviour
         return acc;
     }
 
-    Vector3 CompensateGravity(Vector3 value)
+    private Vector3 CompensateGravity(Vector3 value)
     {
         Quaternion q = Input.gyro.attitude;
         Vector3 gravity = new Vector3(0f, 0f, -.981f * Precision);
