@@ -1,6 +1,7 @@
 ﻿using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AppManager : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class AppManager : MonoBehaviour
     [SerializeField] private TMP_Text phaseText;
     [SerializeField] private AudioClip inhale;
     [SerializeField] private AudioClip exhale;
+
+    [SerializeField] private Button startDetectingButton;
 
     private AudioSource _Source;
     private BreathingDetector _Detector;
@@ -19,15 +22,15 @@ public class AppManager : MonoBehaviour
         _Text = GetComponent<TMP_Text>();
         
         _Detector = new BreathingDetector();
-        
-        Calibartion.CalibrationWasDone += StartDetecting;
-        Calibartion.CalibrationStarted += StopDetecting;
+        StartDetecting();
+
+        startDetectingButton.interactable = false;
     }
 
     public void SetDetectorYThreshold(float value) => _Detector.TimeYThreshold = value;
     public void SetDetectorXZThreshold(float value) => _Detector.TimeXZThreshold = value;
     public void SetDetectorXZBuffer(float value) => _Detector.BufferXZ = value;
-    public void UnblockYAxis() => _Detector.BlockY = false;
+    public void StartDetectingChagnesInY() => _Detector.StartGivingFeedback();
 
     private void StartDetecting()
     {
@@ -35,6 +38,12 @@ public class AppManager : MonoBehaviour
         
         _Detector.InhaleDetected += DetectedPhaseInhale;
         _Detector.ExhaleDetected += DetectedPhaseExhale;
+        _Detector.BreatingStoped += StopSounds;
+        _Detector.OnBlockY += () =>
+        {
+            StopSounds();
+            startDetectingButton.interactable = true;
+        };
     }
 
     private void StopDetecting()
@@ -43,6 +52,7 @@ public class AppManager : MonoBehaviour
         
         _Detector.InhaleDetected -= DetectedPhaseInhale;
         _Detector.ExhaleDetected -= DetectedPhaseExhale;
+        _Detector.BreatingStoped -= StopSounds;
     }
 
     private void ValueChanged(Vector3 value, Vector3 delta)
@@ -53,6 +63,7 @@ public class AppManager : MonoBehaviour
 
     private void DetectedPhaseInhale(Vector3 when) => DetectedPhase(when, inhale, Phase.Inhale);
     private void DetectedPhaseExhale(Vector3 when) => DetectedPhase(when, exhale, Phase.Exhale);
+    private void StopSounds() => _Source.Stop();
 
     private void DetectedPhase(Vector3 when, AudioClip clip, Phase phase)
     {
