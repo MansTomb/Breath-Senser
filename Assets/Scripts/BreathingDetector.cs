@@ -7,6 +7,7 @@ public class BreathingDetector
     public float TimeXZThreshold;
 
     public float BufferXZ;
+    public float BufferY;
     
     private bool BlockY;
     
@@ -18,7 +19,8 @@ public class BreathingDetector
     
     private float _TimeZ;
     private float _ZCurrentValueChange;
-    
+    private float _YCurrentValueChange;
+
     public event Action<Vector3> InhaleDetected;
     public event Action<Vector3> ExhaleDetected;
     public event Action BreatingStoped;
@@ -30,6 +32,7 @@ public class BreathingDetector
         TimeYThreshold = 0.1f;
         TimeXZThreshold = 0.3f;
         BufferXZ = 0.1f;
+        BufferY = 0.02f;
         BlockY = false;
 
         OnBlockY += StopGivingFeedback;
@@ -49,6 +52,16 @@ public class BreathingDetector
     {
         if (BlockY)
             return;
+        
+        _YCurrentValueChange = changeValue;
+        if (InBufferRangeY())
+        {
+            _TimeYincrement = 0;
+            _TimeYdecrement = 0;
+            Debug.Log($"{_YCurrentValueChange} {BufferY}");
+            BreatingStoped?.Invoke();
+            return;
+        }
         
         if (changeValue < 0)
         {
@@ -99,6 +112,7 @@ public class BreathingDetector
     }
     
     private bool InBufferRangeX() => Mathf.Abs(_XCurrentValueChange) < BufferXZ;
+    private bool InBufferRangeY() => Mathf.Abs(_YCurrentValueChange) < BufferY;
     private bool InBufferRangeZ() => Mathf.Abs(_ZCurrentValueChange) < BufferXZ;
     
     private static float GetChangeInValue(float x, float xOld) => Mathf.Abs(x) - Mathf.Abs(xOld);

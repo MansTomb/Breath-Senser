@@ -30,6 +30,7 @@ public class AppManager : MonoBehaviour
     public void SetDetectorYThreshold(float value) => _Detector.TimeYThreshold = value;
     public void SetDetectorXZThreshold(float value) => _Detector.TimeXZThreshold = value;
     public void SetDetectorXZBuffer(float value) => _Detector.BufferXZ = value;
+    public void SetDetectorYBuffer(float value) => _Detector.BufferY = value;
     public void StartDetectingChagnesInY() => _Detector.StartGivingFeedback();
 
     private void StartDetecting()
