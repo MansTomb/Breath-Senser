@@ -10,8 +10,6 @@ public class AppManager : MonoBehaviour
     [SerializeField] private AudioClip inhale;
     [SerializeField] private AudioClip exhale;
 
-    [SerializeField] private Button startDetectingButton;
-
     private AudioSource _Source;
     private BreathingDetector _Detector;
     private TMP_Text _Text;
@@ -23,8 +21,6 @@ public class AppManager : MonoBehaviour
         
         _Detector = new BreathingDetector();
         StartDetecting();
-
-        startDetectingButton.interactable = false;
     }
 
     public void SetDetectorYThreshold(float value) => _Detector.TimeYThreshold = value;
@@ -43,7 +39,7 @@ public class AppManager : MonoBehaviour
         _Detector.OnBlockY += () =>
         {
             StopSounds();
-            startDetectingButton.interactable = true;
+            _Detector.StartGivingFeedback();
         };
     }
 
