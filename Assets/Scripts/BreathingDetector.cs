@@ -51,7 +51,7 @@ public class BreathingDetector
     private void DetectY(Vector3 acceleratorData, float changeValue)
     {
         _YCurrentValueChange = changeValue;
-        if (InBufferRangeY() || (BlockY))
+        if (InBufferRangeY() || (!InBufferRangeX() || !InBufferRangeZ()))
         {
             _TimeYincrement = 0;
             _TimeYdecrement = 0;
