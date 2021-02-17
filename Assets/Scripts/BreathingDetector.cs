@@ -43,6 +43,9 @@ public class BreathingDetector
     
     public void Detect(Vector3 acceleratorData, Vector3 delta)
     {
+        if (BlockY && !InBufferRangeY() && InBufferRangeX() && InBufferRangeZ())
+            StartGivingFeedback();
+        
         DetectX(GetChangeInValue(acceleratorData.x, delta.x));
         DetectZ(GetChangeInValue(acceleratorData.z, delta.z));
         DetectY(acceleratorData, GetChangeInValue(acceleratorData.y, delta.y));
@@ -50,8 +53,11 @@ public class BreathingDetector
 
     private void DetectY(Vector3 acceleratorData, float changeValue)
     {
+        if (BlockY)
+            return;
+        
         _YCurrentValueChange = changeValue;
-        if (InBufferRangeY() || (!InBufferRangeX() || !InBufferRangeZ()))
+        if (InBufferRangeY())
         {
             _TimeYincrement = 0;
             _TimeYdecrement = 0;

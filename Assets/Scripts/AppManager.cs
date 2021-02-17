@@ -36,11 +36,7 @@ public class AppManager : MonoBehaviour
         _Detector.InhaleDetected += DetectedPhaseInhale;
         _Detector.ExhaleDetected += DetectedPhaseExhale;
         _Detector.BreatingStoped += StopSounds;
-        _Detector.OnBlockY += () =>
-        {
-            StopSounds();
-            _Detector.StartGivingFeedback();
-        };
+        _Detector.OnBlockY += StopSounds;
     }
 
     private void StopDetecting()
