@@ -4,8 +4,9 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     private const float AccelerometerUpdateInterval = 1.0f / 60.0f;
-    private const float LowPassKernelWidthInSeconds = .3f;
     private const float Precision = 100f;
+    
+    private float _LowPassKernelWidthInSeconds = .5f;
 
     private float _LowPassFilterFactor;
     private Vector3 _LowPassValueOld = Vector3.zero;
@@ -13,11 +14,17 @@ public class InputManager : MonoBehaviour
 
     public event Action<Vector3, Vector3> ValueChanged;
 
+    public void SetLowPassKernelWidth(float value)
+    {
+        _LowPassKernelWidthInSeconds = value;
+        _LowPassFilterFactor = AccelerometerUpdateInterval / _LowPassKernelWidthInSeconds;
+    }
+
     private void Start()
     {
         Input.gyro.enabled = true;
         
-        _LowPassFilterFactor = AccelerometerUpdateInterval / LowPassKernelWidthInSeconds;
+        _LowPassFilterFactor = AccelerometerUpdateInterval / _LowPassKernelWidthInSeconds;
         _LowPassValue = GetAccelerometerValue();
     }
 

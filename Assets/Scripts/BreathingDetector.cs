@@ -61,6 +61,7 @@ public class BreathingDetector
         {
             _TimeYincrement = 0;
             _TimeYdecrement = 0;
+            Debug.Log("InBufferRangeY");
             BreatingStoped?.Invoke();
             return;
         }
