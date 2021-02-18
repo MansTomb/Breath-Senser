@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class InputManager : MonoBehaviour
 {
     private const float AccelerometerUpdateInterval = 1.0f / 60.0f;
-    private const float LowPassKernelWidthInSeconds = 1.0f;
+    private const float LowPassKernelWidthInSeconds = .3f;
     private const float Precision = 100f;
 
     private float _LowPassFilterFactor;
@@ -15,8 +12,6 @@ public class InputManager : MonoBehaviour
     private Vector3 _LowPassValue = Vector3.zero;
 
     public event Action<Vector3, Vector3> ValueChanged;
-
-    public Vector3 Value => _LowPassValue * Precision;
 
     private void Start()
     {
